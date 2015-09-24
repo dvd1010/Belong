@@ -9,7 +9,9 @@ import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
+import android.text.SpannableString;
 import android.view.Gravity;
+import android.view.Menu;
 import android.widget.RelativeLayout;
 
 import com.belonginterview.R;
@@ -25,21 +27,24 @@ import com.belonginterview.model.Product;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
-public class MainActivity extends FragmentActivity implements NavigationDrawerCallbacks,
+public class MainActivity extends AppCompatActivity implements NavigationDrawerCallbacks,
         OnDrawerCloseRequestListener {
 
     private NavigationDrawerFragment mNavigationDrawerFragment;
     private DrawerLayout drawerLayout;
     private RelativeLayout leftDrawer;
     private FragmentManager fragmentManager = getSupportFragmentManager();
+    private String mTitle;
+    private Toolbar toolbar;
 
-    private static final String GET_PRODUCTS_URL = "http://api.buyingiq.com/v1/search/?page={0}&{1}&facet=1";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
         setContentView(R.layout.activity_main);
-        Toolbar toolbar = (Toolbar)findViewById(R.id.toolbar);
+        toolbar = (Toolbar)findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
         leftDrawer = (RelativeLayout) findViewById(R.id.left_drawer);
         drawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
         drawerLayout.closeDrawers();
@@ -58,6 +63,7 @@ public class MainActivity extends FragmentActivity implements NavigationDrawerCa
             public void run() {
                 android.os.Process.setThreadPriority(android.os.Process.THREAD_PRIORITY_BACKGROUND);
                 Fragment currentFragment = getCurrentFragment(position);
+                mTitle = MenuOptionsEnum.getMenuOption(position).getName();
                 fragmentManager.beginTransaction()
                         .replace(R.id.content_frame, currentFragment)
                         .setTransition(FragmentTransaction.TRANSIT_NONE)
@@ -81,6 +87,18 @@ public class MainActivity extends FragmentActivity implements NavigationDrawerCa
         if (drawerLayout.isDrawerOpen(Gravity.LEFT)){
             drawerLayout.closeDrawers();
         }
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        if (mNavigationDrawerFragment != null && !mNavigationDrawerFragment.isDrawerOpen()) {
+            // Only show items in the action bar relevant to this screen
+            // if the drawer is not showing. Otherwise, let the drawer
+            // decide what to show in the action bar.
+            getSupportActionBar().setTitle(mTitle);
+            return true;
+        }
+        return super.onCreateOptionsMenu(menu);
     }
 
 }

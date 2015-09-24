@@ -13,6 +13,7 @@ public class ItemList implements Serializable {
     private ArrayList<SelectedTag> selectedTags;
     private ArrayList<Facet> selectedFacets;
     private ArrayList<Folder> folders;
+    private ArrayList<Product> products;
 
     public int getTook() {
         return took;
@@ -52,5 +53,13 @@ public class ItemList implements Serializable {
 
     public void setFolders(ArrayList<Folder> folders) {
         this.folders = folders;
+    }
+
+    public ArrayList<Product> getProducts() {
+        return products;
+    }
+
+    public void setProducts(ArrayList<Product> products) {
+        this.products = products;
     }
 }

@@ -21,9 +21,9 @@ public class Product implements Serializable {
     private int storeCount;
     private String minPrice;
     private String minPriceStr;
-    private ArrayList<String> keyFeatures;
+    private ArrayList<ArrayList<String>> keyFeatures;
     private String url;
-    private Image imageO;
+    private Image imagesO;
     private int biqScore;
     private int curatedReviewCount;
 
@@ -131,11 +131,11 @@ public class Product implements Serializable {
         this.minPriceStr = minPriceStr;
     }
 
-    public ArrayList<String> getKeyFeatures() {
+    public ArrayList<ArrayList<String>> getKeyFeatures() {
         return keyFeatures;
     }
 
-    public void setKeyFeatures(ArrayList<String> keyFeatures) {
+    public void setKeyFeatures(ArrayList<ArrayList<String>> keyFeatures) {
         this.keyFeatures = keyFeatures;
     }
 
@@ -147,12 +147,12 @@ public class Product implements Serializable {
         this.url = url;
     }
 
-    public Image getImageO() {
-        return imageO;
+    public Image getImagesO() {
+        return imagesO;
     }
 
-    public void setImageO(Image imageO) {
-        this.imageO = imageO;
+    public void setImagesO(Image imagesO) {
+        this.imagesO = imagesO;
     }
 
     public int getBiqScore() {
