@@ -12,6 +12,9 @@ import com.belonginterview.R;
 import com.belonginterview.model.Product;
 import com.koushikdutta.urlimageviewhelper.UrlImageViewHelper;
 
+import java.math.BigDecimal;
+import java.math.RoundingMode;
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 
 /**
@@ -22,6 +25,10 @@ public class ProductListAdapter extends ArrayAdapter {
 
     private ArrayList<Product> products;
     private Context context;
+    private static final BigDecimal EIGHT = new BigDecimal("8");
+    private static final BigDecimal SEVEN = new BigDecimal("7");
+    private static final BigDecimal SIX = new BigDecimal("6");
+
     public ProductListAdapter(Context context, int resource, ArrayList<Product> products) {
         super(context, resource, products);
         this.products = products;
@@ -80,9 +87,28 @@ public class ProductListAdapter extends ArrayAdapter {
             vh.productPriceView.setText(product.getMinPriceStr());
             vh.storeCount.setText(String.valueOf(product.getStoreCount())+ " stores");
             vh.voteCount.setText(String.valueOf(product.getRatingCount()) + " votes");
-            vh.productRatingView.setText(product.getAvgRating());
+
+            BigDecimal ratingDecimal = new BigDecimal(product.getAvgRating());
+            ratingDecimal = ratingDecimal.setScale(1, RoundingMode.CEILING);
+            setRatingBackground(vh.productRatingView, ratingDecimal);
+
+            vh.productRatingView.setText(ratingDecimal.toString());
         }
 
         return view;
+    }
+
+    private void setRatingBackground(TextView view, BigDecimal ratingDecimal){
+        ratingDecimal = ratingDecimal.setScale(1, RoundingMode.CEILING);
+        if(ratingDecimal.compareTo(EIGHT)>=0){
+            view.setBackgroundResource(R.drawable.button_green);
+        }else if(ratingDecimal.compareTo(EIGHT)<0 && ratingDecimal.compareTo(SEVEN)>=0){
+            view.setBackgroundResource(R.drawable.button_light_green);
+        }else if(ratingDecimal.compareTo(SEVEN)<0 && ratingDecimal.compareTo(SIX)>=0){
+            view.setBackgroundResource(R.drawable.button_yellow);
+        }else {
+            view.setBackgroundResource(R.drawable.button_orange);
+        }
+
     }
 }

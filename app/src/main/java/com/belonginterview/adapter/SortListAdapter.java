@@ -5,36 +5,34 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
-import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.belonginterview.R;
 import com.belonginterview.model.Folder;
-import com.belonginterview.model.Product;
-import com.koushikdutta.urlimageviewhelper.UrlImageViewHelper;
 
 import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Created by SuperProfs on 24/09/15.
+ * Created by SuperProfs on 26/09/15.
  */
-public class FolderListAdapter extends ArrayAdapter {
+public class SortListAdapter extends ArrayAdapter {
 
-    private ArrayList<Folder> folders;
-    public FolderListAdapter(Context context, int resource, ArrayList<Folder> folders) {
-        super(context, resource, folders);
-        this.folders = folders;
+
+    private ArrayList<String> sortCriterias;
+    public SortListAdapter(Context context, int resource, ArrayList<String> sortCriterias) {
+        super(context, resource, sortCriterias);
+        this.sortCriterias = sortCriterias;
     }
 
     @Override
     public int getCount() {
-        return folders.size();
+        return sortCriterias.size();
     }
 
     @Override
-    public Folder getItem(int position) {
-        return folders.get(position);
+    public String getItem(int position) {
+        return sortCriterias.get(position);
     }
 
     @Override
@@ -43,7 +41,7 @@ public class FolderListAdapter extends ArrayAdapter {
     }
 
     class ViewHolder {
-        TextView folderNameView;
+        TextView criteriaNameView;
     }
 
     @Override
@@ -53,23 +51,18 @@ public class FolderListAdapter extends ArrayAdapter {
         if (view == null) {
             vh = new ViewHolder();
             LayoutInflater inflater = (LayoutInflater) getContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-            view = inflater.inflate(R.layout.list_item_folder, null);
-            vh.folderNameView = (TextView)view.findViewById(R.id.folder_name);
+            view = inflater.inflate(R.layout.list_item_sort, null);
+            vh.criteriaNameView = (TextView)view.findViewById(R.id.criteria_name);
             view.setTag(vh);
         }else{
             vh = (ViewHolder)view.getTag();
         }
-        Folder folder = folders.get(position);
-        if(folder != null){
-            vh.folderNameView.setText(folder.getName().toUpperCase());
+        String criteria = sortCriterias.get(position);
+        if(criteria != null){
+            vh.criteriaNameView.setText(criteria);
         }
 
         return view;
-    }
-
-    @Override
-    public void setDropDownViewResource(int resource) {
-        super.setDropDownViewResource(R.layout.fragment_facet_dropdown);
     }
 
 }

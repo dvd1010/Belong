@@ -25,4 +25,7 @@
     <color name="supermoney_background_green">#009788</color>
     <color name="red">#FFFF0714</color>
     <color name="dark_blue">#00008B</color>
+    <color name="light_green">#6CBB3C</color>
+    <color name="yellow">#EAC117</color>
+    <color name="orange_dark">#FFA62F</color>
 </resources>
