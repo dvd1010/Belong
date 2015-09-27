@@ -9,6 +9,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.belonginterview.R;
+import com.belonginterview.fragment.ProductListFragment;
 import com.belonginterview.model.Folder;
 import com.belonginterview.model.Product;
 import com.koushikdutta.urlimageviewhelper.UrlImageViewHelper;
@@ -62,14 +63,15 @@ public class FolderListAdapter extends ArrayAdapter {
         Folder folder = folders.get(position);
         if(folder != null){
             vh.folderNameView.setText(folder.getName().toUpperCase());
+            if(!ProductListFragment.selectedFolder.isEmpty() && ProductListFragment.selectedFolder.equalsIgnoreCase(folder.getName())){
+                vh.folderNameView.setTextColor(getContext().getResources().getColor(R.color.orange_dark));
+            }else{
+                vh.folderNameView.setTextColor(getContext().getResources().getColor(R.color.black));
+            }
+
         }
 
         return view;
-    }
-
-    @Override
-    public void setDropDownViewResource(int resource) {
-        super.setDropDownViewResource(R.layout.fragment_facet_dropdown);
     }
 
 }

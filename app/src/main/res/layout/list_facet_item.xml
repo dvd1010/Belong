@@ -4,10 +4,12 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:background="@color/white"
-    android:paddingTop="8dp"
-    android:paddingBottom="8dp">
+    android:paddingTop="10dp"
+    android:paddingBottom="10dp"
+    android:layout_centerVertical="true">
 
     <TextView
+        android:id="@+id/facet_name"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Smartphones"
@@ -17,6 +19,7 @@
 
 
     <TextView
+        android:id="@+id/facet_count"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="(15)"
@@ -25,11 +28,13 @@
         android:layout_marginLeft="5dp"
         android:layout_weight="1"/>
 
-    <CheckBox
-        android:id="@+id/checkbox"
+    <ImageView
+        android:id="@+id/check"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:background="@drawable/check_box"
-        android:layout_marginRight="15dp"/>
+        android:src="@drawable/check"
+        android:visibility="gone"
+        android:paddingRight="15dp"
+        android:paddingLeft="15dp"/>
 
 </LinearLayout>
