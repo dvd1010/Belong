@@ -14,6 +14,8 @@ public class ItemList implements Serializable {
     private ArrayList<Facet> selectedFacets;
     private ArrayList<Folder> folders;
     private ArrayList<Product> products;
+    private String prev;
+    private String next;
 
     public int getTook() {
         return took;
@@ -61,5 +63,21 @@ public class ItemList implements Serializable {
 
     public void setProducts(ArrayList<Product> products) {
         this.products = products;
+    }
+
+    public String getPrev() {
+        return prev;
+    }
+
+    public void setPrev(String prev) {
+        this.prev = prev;
+    }
+
+    public String getNext() {
+        return next;
+    }
+
+    public void setNext(String next) {
+        this.next = next;
     }
 }

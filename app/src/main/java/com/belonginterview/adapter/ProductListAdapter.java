@@ -1,6 +1,7 @@
 package com.belonginterview.adapter;
 
 import android.content.Context;
+import android.os.AsyncTask;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -9,12 +10,13 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.belonginterview.R;
+import com.belonginterview.fragment.ProductListFragment;
 import com.belonginterview.model.Product;
+import com.belonginterview.utils.GetProductDetailsTask;
 import com.koushikdutta.urlimageviewhelper.UrlImageViewHelper;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
-import java.text.DecimalFormat;
 import java.util.ArrayList;
 
 /**
@@ -25,14 +27,17 @@ public class ProductListAdapter extends ArrayAdapter {
 
     private ArrayList<Product> products;
     private Context context;
+    private ProductListFragment fragment;
+
     private static final BigDecimal EIGHT = new BigDecimal("8");
     private static final BigDecimal SEVEN = new BigDecimal("7");
     private static final BigDecimal SIX = new BigDecimal("6");
 
-    public ProductListAdapter(Context context, int resource, ArrayList<Product> products) {
+    public ProductListAdapter(Context context, int resource, ArrayList<Product> products, ProductListFragment fragment) {
         super(context, resource, products);
         this.products = products;
         this.context = context;
+        this.fragment = fragment;
     }
 
     @Override
@@ -93,6 +98,11 @@ public class ProductListAdapter extends ArrayAdapter {
             setRatingBackground(vh.productRatingView, ratingDecimal);
 
             vh.productRatingView.setText(ratingDecimal.toString());
+        }
+
+        if(position == getCount() - 1) {
+            new GetProductDetailsTask(fragment).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, ProductListFragment.apiTag,
+                    ProductListFragment.nextUrl+"&facet=1");
         }
 
         return view;

@@ -1,5 +1,8 @@
 package com.belonginterview.activity;
 
+import android.app.SearchManager;
+import android.content.Context;
+import android.content.Intent;
 import android.os.AsyncTask;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
@@ -8,10 +11,13 @@ import android.support.v4.app.FragmentTransaction;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.widget.SearchView;
 import android.support.v7.widget.Toolbar;
 import android.text.SpannableString;
 import android.view.Gravity;
 import android.view.Menu;
+import android.view.MenuItem;
+import android.view.View;
 import android.widget.RelativeLayout;
 
 import com.belonginterview.R;
@@ -45,15 +51,31 @@ public class MainActivity extends AppCompatActivity implements NavigationDrawerC
         setContentView(R.layout.activity_main);
         toolbar = (Toolbar)findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        getSupportActionBar().setHomeButtonEnabled(true);
         leftDrawer = (RelativeLayout) findViewById(R.id.left_drawer);
         drawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
         drawerLayout.closeDrawers();
         mNavigationDrawerFragment = (NavigationDrawerFragment)
                 getSupportFragmentManager().findFragmentById(R.id.navigation_drawer);
         mNavigationDrawerFragment.setUp(R.id.left_drawer, drawerLayout, toolbar);
+
+        handleIntent(getIntent());
     }
 
+    @Override
+    protected void onNewIntent(Intent intent) {
+        handleIntent(intent);
+        super.onNewIntent(intent);
+    }
 
+    private void handleIntent(Intent intent) {
+
+        if (Intent.ACTION_SEARCH.equals(intent.getAction())) {
+            String query = intent.getStringExtra(SearchManager.QUERY);
+            //use the query to search your data somehow
+        }
+    }
 
     @Override
     public void onNavigationDrawerItemSelected(final int position) {
@@ -91,14 +113,39 @@ public class MainActivity extends AppCompatActivity implements NavigationDrawerC
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        if (mNavigationDrawerFragment != null && !mNavigationDrawerFragment.isDrawerOpen()) {
-            // Only show items in the action bar relevant to this screen
-            // if the drawer is not showing. Otherwise, let the drawer
-            // decide what to show in the action bar.
-            getSupportActionBar().setTitle(mTitle);
-            return true;
-        }
+        getMenuInflater().inflate(R.menu.menu_search, menu);
+        SearchManager searchManager =
+                (SearchManager) getSystemService(Context.SEARCH_SERVICE);
+        SearchView searchView =
+                (SearchView) menu.findItem(R.id.search).getActionView();
+        searchView.setSearchableInfo(
+                searchManager.getSearchableInfo(getComponentName()));
+
+        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+            @Override
+            public boolean onQueryTextSubmit(String query) {
+                return false;
+            }
+
+            @Override
+            public boolean onQueryTextChange(String newText) {
+                String text = newText;
+                return false;
+            }
+        });
+
         return super.onCreateOptionsMenu(menu);
     }
 
+    /*@Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        int id = item.getItemId();
+
+        if (id == R.id.search) {
+            Intent intent = new Intent(this, SearchActivity.class);
+            startActivity(intent);
+        }
+
+        return super.onOptionsItemSelected(item);
+    }*/
 }
