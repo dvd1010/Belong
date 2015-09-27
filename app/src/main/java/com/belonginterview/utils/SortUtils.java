@@ -5,9 +5,7 @@ import com.belonginterview.model.Constants;
 import java.util.ArrayList;
 import java.util.List;
 
-/**
- * Created by SuperProfs on 26/09/15.
- */
+
 public class SortUtils {
 
     public static ArrayList<String> getSortCriteria(){

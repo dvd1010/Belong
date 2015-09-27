@@ -2,9 +2,7 @@ package com.belonginterview.model;
 
 import java.io.Serializable;
 
-/**
- * Created by SuperProfs on 22/09/15.
- */
+
 public class Facet implements Serializable {
 
     private String label;
@@ -42,5 +40,32 @@ public class Facet implements Serializable {
 
     public void setIsSelected(boolean isSelected) {
         this.isSelected = isSelected;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass())
+            return false;
+
+        Facet facet = (Facet) o;
+
+        if (count != facet.count)
+            return false;
+        if (isSelected != facet.isSelected)
+            return false;
+        if (label != null ? !label.equals(facet.label) : facet.label != null)
+            return false;
+        return !(tag != null ? !tag.equals(facet.tag) : facet.tag != null);
+
+    }
+
+    @Override
+    public int hashCode() {
+        int result = label != null ? label.hashCode() : 0;
+        result = 31 * result + (tag != null ? tag.hashCode() : 0);
+        result = 31 * result + count;
+        result = 31 * result + (isSelected ? 1 : 0);
+        return result;
     }
 }

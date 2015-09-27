@@ -2,9 +2,6 @@ package com.belonginterview.model;
 
 import java.io.Serializable;
 
-/**
- * Created by SuperProfs on 22/09/15.
- */
 public class SelectedTag implements Serializable{
     private String tag;
 

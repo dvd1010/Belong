@@ -9,13 +9,12 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.belonginterview.R;
+import com.belonginterview.fragment.ProductListFragment;
 import com.belonginterview.model.Facet;
 
 import java.util.ArrayList;
 
-/**
- * Created by SuperProfs on 27/09/15.
- */
+
 public class FacetListAdapter extends ArrayAdapter {
 
     private ArrayList<Facet> facets;
@@ -65,6 +64,11 @@ public class FacetListAdapter extends ArrayAdapter {
         if(facet != null && facet.getCount()>0){
             vh.facetNameView.setText(facet.getLabel());
             vh.facetCountView.setText("("+facet.getCount()+")");
+            if(facet.isSelected()){
+                vh.selectedCheckView.setVisibility(View.VISIBLE);
+            }else{
+                vh.selectedCheckView.setVisibility(View.GONE);
+            }
         }
 
         return view;

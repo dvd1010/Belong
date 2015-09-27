@@ -14,9 +14,6 @@ import com.belonginterview.enums.MenuOptionsEnum;
 import java.util.ArrayList;
 import java.util.List;
 
-/**
- * Created by SuperProfs on 21/09/15.
- */
 public class MenuAdapter extends ArrayAdapter {
 
     private List<String> menuOptions;

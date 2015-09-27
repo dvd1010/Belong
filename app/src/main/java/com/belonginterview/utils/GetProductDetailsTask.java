@@ -7,9 +7,7 @@ import com.belonginterview.model.ItemList;
 
 import java.text.MessageFormat;
 
-/**
- * Created by SuperProfs on 26/09/15.
- */
+
 public class GetProductDetailsTask extends AsyncTask<String, Void, ItemList> {
 
     private ProductListFragment fragment;
@@ -22,6 +20,7 @@ public class GetProductDetailsTask extends AsyncTask<String, Void, ItemList> {
     public GetProductDetailsTask(ProductListFragment fragment){
         this.fragment = fragment;
     }
+
 
     @Override
     protected ItemList doInBackground(String... params) {

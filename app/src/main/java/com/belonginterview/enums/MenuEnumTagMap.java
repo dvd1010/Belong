@@ -2,9 +2,7 @@ package com.belonginterview.enums;
 
 import java.util.EnumMap;
 
-/**
- * Created by SuperProfs on 21/09/15.
- */
+
 public class MenuEnumTagMap {
 
     private static final EnumMap<MenuOptionsEnum, String> menuOptionsEnumMap = new EnumMap<>(MenuOptionsEnum.class);

@@ -38,7 +38,6 @@ public class MainActivity extends AppCompatActivity implements NavigationDrawerC
 
     private NavigationDrawerFragment mNavigationDrawerFragment;
     private DrawerLayout drawerLayout;
-    private RelativeLayout leftDrawer;
     private FragmentManager fragmentManager = getSupportFragmentManager();
     private String mTitle;
     private Toolbar toolbar;
@@ -53,7 +52,6 @@ public class MainActivity extends AppCompatActivity implements NavigationDrawerC
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setHomeButtonEnabled(true);
-        leftDrawer = (RelativeLayout) findViewById(R.id.left_drawer);
         drawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
         drawerLayout.closeDrawers();
         mNavigationDrawerFragment = (NavigationDrawerFragment)
@@ -133,19 +131,12 @@ public class MainActivity extends AppCompatActivity implements NavigationDrawerC
                 return false;
             }
         });
-
+        getSupportActionBar().setTitle(mTitle);
         return super.onCreateOptionsMenu(menu);
     }
 
-    /*@Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        int id = item.getItemId();
-
-        if (id == R.id.search) {
-            Intent intent = new Intent(this, SearchActivity.class);
-            startActivity(intent);
-        }
-
-        return super.onOptionsItemSelected(item);
-    }*/
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+    }
 }

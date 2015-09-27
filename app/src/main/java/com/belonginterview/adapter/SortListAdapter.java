@@ -13,9 +13,7 @@ import com.belonginterview.model.Folder;
 import java.util.ArrayList;
 import java.util.List;
 
-/**
- * Created by SuperProfs on 26/09/15.
- */
+
 public class SortListAdapter extends ArrayAdapter {
 
 

@@ -10,9 +10,6 @@ import android.view.Menu;
 
 import com.belonginterview.R;
 
-/**
- * Created by SuperProfs on 26/09/15.
- */
 public class SearchActivity extends Activity {
 
 

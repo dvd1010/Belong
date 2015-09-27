@@ -19,9 +19,6 @@ import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.ArrayList;
 
-/**
- * Created by SuperProfs on 23/09/15.
- */
 public class ProductListAdapter extends ArrayAdapter {
 
 

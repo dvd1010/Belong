@@ -56,13 +56,16 @@
             android:background="@color/white"
             android:choiceMode="singleChoice"
             android:divider="@color/orange"
-            android:dividerHeight="0.5dp" />
+            android:dividerHeight="0.5dp"
+            android:layout_marginBottom="40dp"/>
 
         <LinearLayout
             android:id="@+id/drop_layout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_alignParentBottom="true"
+            android:layout_alignParentEnd="true"
+            android:layout_alignParentRight="true"
             android:orientation="horizontal">
 
             <TextView
@@ -86,6 +89,7 @@
                 android:background="@drawable/button_orange"
                 android:gravity="center"
                 android:text="APPLY"
+                android:textColor="@color/white"
                 android:textSize="15sp" />
 
         </LinearLayout>

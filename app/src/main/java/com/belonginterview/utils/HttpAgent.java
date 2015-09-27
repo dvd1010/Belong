@@ -11,9 +11,7 @@ import org.apache.http.params.BasicHttpParams;
 import org.apache.http.params.HttpParams;
 
 
-/**
- * Created by SuperProfs on 22/09/15.
- */
+
 public class HttpAgent {
     private static final String TAG = HttpAgent.class.getSimpleName();
 
