@@ -29,6 +29,7 @@ import com.belonginterview.model.Constants;
 import com.belonginterview.model.Facet;
 import com.belonginterview.model.Folder;
 import com.belonginterview.model.ItemList;
+import com.belonginterview.utils.ExpandCollapseAnimation;
 import com.belonginterview.utils.GetProductDetailsTask;
 import com.belonginterview.utils.SortUtils;
 
@@ -65,7 +66,6 @@ public class ProductListFragment extends Fragment {
 
     private static final String queryParamFirstPage = "page=1&{0}&facet=1";
     ;
-    public static Map<String, ArrayList<Facet>> facetCheckMap;
     private ArrayList<String> tagList;
 
 
@@ -83,7 +83,6 @@ public class ProductListFragment extends Fragment {
         handleApplyFilterClick();
         handleClearFilterClick();
 
-        facetCheckMap = new HashMap<>();
         tagList = new ArrayList<>();
         selectedFolder = "";
         checkCount = 0;
@@ -96,14 +95,17 @@ public class ProductListFragment extends Fragment {
         folderListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+                ExpandCollapseAnimation animation = null;
                 Animation slideDown = AnimationUtils.loadAnimation(getActivity(), R.anim.slide_down);
                 Animation slideUp = AnimationUtils.loadAnimation(getActivity(), R.anim.slide_up);
                 TextView tv = (TextView) view.findViewById(R.id.folder_name);
                 if (containerLayout.getVisibility() == View.GONE ||
                         (markedTextView != null && !markedTextView.getText().equals(tv.getText()) && containerLayout.getVisibility() == View.VISIBLE)) {
-                    //containerLayout.setAnimation(slideDown);
-                    containerLayout.setVisibility(View.VISIBLE);
-                    containerLayout.bringToFront();
+
+                    if(containerLayout.getVisibility() == View.GONE) {
+                        animation = new ExpandCollapseAnimation(containerLayout, 500, 0);
+                        containerLayout.startAnimation(animation);
+                    }
 
                     tv.setTextColor(getResources().getColor(R.color.orange_dark));
                     if (markedTextView != null) {
@@ -129,10 +131,12 @@ public class ProductListFragment extends Fragment {
                     }
 
                 } else if (markedTextView.getText().equals(tv.getText()) && containerLayout.getVisibility() == View.VISIBLE) {
-                    containerLayout.setVisibility(View.GONE);
+                    animation = new ExpandCollapseAnimation(containerLayout, 500, 1);
+                    containerLayout.startAnimation(animation);
                     selectedFolder = "";
                     markedTextView.setTextColor(getResources().getColor(R.color.black));
                 }
+
             }
         });
     }
@@ -145,20 +149,10 @@ public class ProductListFragment extends Fragment {
                 Facet facet = (Facet) adapterView.getAdapter().getItem(i);
                 if (checkedView.getVisibility() == View.GONE) {
                     checkedView.setVisibility(View.VISIBLE);
-                    ArrayList<Facet> checkedFacetList;
-                    if (facetCheckMap.containsKey(selectedFolderName)) {
-                        checkedFacetList = facetCheckMap.get(selectedFolderName);
-                        checkedFacetList.add(facet);
-                    } else {
-                        checkedFacetList = new ArrayList<>();
-                        checkedFacetList.add(facet);
-                    }
                     tagList.add(facet.getTag());
-                    facetCheckMap.put(selectedFolderName, checkedFacetList);
                     checkCount++;
                 } else {
                     checkedView.setVisibility(View.GONE);
-                    facetCheckMap.get(selectedFolderName).remove(facet);
                     tagList.remove(facet.getTag());
                     checkCount--;
                 }
@@ -193,6 +187,7 @@ public class ProductListFragment extends Fragment {
 
                 alertDialog.setView(sortDialogView);
                 alertDialog.setCustomTitle(sortDialogHeaderView);
+                alertDialog.setCancelable(true);
                 alertDialog.show();
             }
         });
@@ -236,7 +231,7 @@ public class ProductListFragment extends Fragment {
         progressBar = (ProgressBar) view.findViewById(R.id.progress_bar);
         folderListView = (TwoWayView) view.findViewById(R.id.folder_list);
         sortImageView = (ImageView) view.findViewById(R.id.sort_icon);
-        alertDialog = new AlertDialog.Builder(getActivity(), android.app.AlertDialog.THEME_HOLO_LIGHT);
+        alertDialog = new AlertDialog.Builder(getActivity());
         containerLayout = (RelativeLayout) view.findViewById(R.id.facet_dropdown);
         facetListView = (ListView) view.findViewById(R.id.facet_list);
         applyView = (TextView) view.findViewById(R.id.apply_filter);
