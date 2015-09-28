@@ -33,6 +33,7 @@ import com.belonginterview.model.Product;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
+/*The main Activity which opens on App Launch*/
 public class MainActivity extends AppCompatActivity implements NavigationDrawerCallbacks,
         OnDrawerCloseRequestListener {
 
@@ -76,6 +77,7 @@ public class MainActivity extends AppCompatActivity implements NavigationDrawerC
         }
     }
 
+    /*Opens Fragment corresponding to user selection on Navigation Drawer*/
     @Override
     public void onNavigationDrawerItemSelected(final int position) {
         ExecutorService executorService = Executors.newSingleThreadExecutor();

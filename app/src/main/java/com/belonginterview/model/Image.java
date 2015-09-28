@@ -2,7 +2,7 @@ package com.belonginterview.model;
 
 import java.io.Serializable;
 
-
+/*Image of particular object*/
 public class Image implements Serializable {
 
     private String s;

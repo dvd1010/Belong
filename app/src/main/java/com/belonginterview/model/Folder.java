@@ -3,7 +3,7 @@ package com.belonginterview.model;
 import java.io.Serializable;
 import java.util.ArrayList;
 
-
+/*Item on top horizontal list*/
 public class Folder implements Serializable {
 
     private String uri;

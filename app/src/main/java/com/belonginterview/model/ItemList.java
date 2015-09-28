@@ -3,7 +3,7 @@ package com.belonginterview.model;
 import java.io.Serializable;
 import java.util.ArrayList;
 
-
+/*The main data response parsed from API */
 public class ItemList implements Serializable {
 
     private int took;

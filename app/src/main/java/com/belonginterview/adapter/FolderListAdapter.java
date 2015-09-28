@@ -17,6 +17,8 @@ import com.koushikdutta.urlimageviewhelper.UrlImageViewHelper;
 import java.util.ArrayList;
 import java.util.List;
 
+
+/*Horizontal list adapter of Folders like BRAND, PRICE RANGE, etc on top of product list*/
 public class FolderListAdapter extends ArrayAdapter {
 
     private ArrayList<Folder> folders;

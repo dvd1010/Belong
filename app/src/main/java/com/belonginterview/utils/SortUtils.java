@@ -5,7 +5,7 @@ import com.belonginterview.model.Constants;
 import java.util.ArrayList;
 import java.util.List;
 
-
+/*Arranges sort criterias for product list*/
 public class SortUtils {
 
     public static ArrayList<String> getSortCriteria(){

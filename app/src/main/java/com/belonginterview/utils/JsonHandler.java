@@ -14,6 +14,7 @@ import java.io.IOException;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 
+/*The code converts underscore API to camel case*/
 public class JsonHandler {
 
     private static final String TAG = JsonHandler.class.getSimpleName();

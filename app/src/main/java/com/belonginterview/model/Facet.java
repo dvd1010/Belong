@@ -2,7 +2,7 @@ package com.belonginterview.model;
 
 import java.io.Serializable;
 
-
+/*The item on the drop down list*/
 public class Facet implements Serializable {
 
     private String label;

@@ -14,6 +14,7 @@ import com.belonginterview.enums.MenuOptionsEnum;
 import java.util.ArrayList;
 import java.util.List;
 
+/*List Adapter for items in the side navigation drawer*/
 public class MenuAdapter extends ArrayAdapter {
 
     private List<String> menuOptions;

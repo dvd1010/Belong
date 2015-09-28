@@ -28,6 +28,8 @@ import com.belonginterview.interfaces.NavigationDrawerCallbacks;
 import java.util.ArrayList;
 import java.util.List;
 
+
+/*Fragment defining the side navigation drawer on Main Activity*/
 public class NavigationDrawerFragment extends Fragment {
 
     private static final String STATE_SELECTED_POSITION = "selected_navigation_drawer_position";
@@ -79,9 +81,7 @@ public class NavigationDrawerFragment extends Fragment {
     }
 
 
-    /**
-     * Users of this fragment must call this method to set up the navigation drawer interactions.
-     */
+    /*Set up the navigation drawer interactions.*/
     public void setUp(int fragmentId, DrawerLayout drawerLayout, Toolbar toolbar) {
         mContainerView = getActivity().findViewById(fragmentId);
         mDrawerLayout = drawerLayout;

@@ -7,7 +7,7 @@ import com.belonginterview.model.ItemList;
 
 import java.text.MessageFormat;
 
-
+/*Gets data from the background thread via API call*/
 public class GetProductDetailsTask extends AsyncTask<String, Void, ItemList> {
 
     private ProductListFragment fragment;

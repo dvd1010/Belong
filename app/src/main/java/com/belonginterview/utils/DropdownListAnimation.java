@@ -6,15 +6,13 @@ import android.view.animation.Transformation;
 
 import com.belonginterview.enums.AnimationEnum;
 
-/**
- * Created by SuperProfs on 28/09/15.
- */
-public class ExpandCollapseAnimation extends Animation {
+/*Class sets animation to dropdown list*/
+public class DropdownListAnimation extends Animation {
     private View mAnimatedView;
     private int mEndHeight;
     private AnimationEnum mType;
 
-    public ExpandCollapseAnimation(View view, int duration, AnimationEnum type) {
+    public DropdownListAnimation(View view, int duration, AnimationEnum type) {
         setDuration(duration);
         mAnimatedView = view;
         mEndHeight = mAnimatedView.getLayoutParams().height;

@@ -14,7 +14,7 @@ import com.belonginterview.model.Facet;
 
 import java.util.ArrayList;
 
-
+/*Vertical drop down list adapter, which shows and hides on click on horizontal folder list item*/
 public class FacetListAdapter extends ArrayAdapter {
 
     private ArrayList<Facet> facets;

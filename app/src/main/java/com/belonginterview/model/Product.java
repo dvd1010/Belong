@@ -3,7 +3,7 @@ package com.belonginterview.model;
 import java.io.Serializable;
 import java.util.ArrayList;
 
-
+/*Class contains all product related info*/
 public class Product implements Serializable {
 
     private String id;

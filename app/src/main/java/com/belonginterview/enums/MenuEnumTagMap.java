@@ -2,7 +2,7 @@ package com.belonginterview.enums;
 
 import java.util.EnumMap;
 
-
+/*Has a relation of products on navigation drawer and corresponding api tags*/
 public class MenuEnumTagMap {
 
     private static final EnumMap<MenuOptionsEnum, String> menuOptionsEnumMap = new EnumMap<>(MenuOptionsEnum.class);

@@ -13,7 +13,7 @@ import com.belonginterview.model.Folder;
 import java.util.ArrayList;
 import java.util.List;
 
-
+/*List Adapter for Sort criteria in the popup which comes after clicking sort icon */
 public class SortListAdapter extends ArrayAdapter {
 
 

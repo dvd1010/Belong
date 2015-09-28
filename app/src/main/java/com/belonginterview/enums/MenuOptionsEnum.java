@@ -3,7 +3,7 @@ package com.belonginterview.enums;
 import java.util.ArrayList;
 import java.util.List;
 
-
+/*Enum defines the position and name of the items displayed on the side navigation drawer*/
 public enum MenuOptionsEnum {
 
     MOBILES(0, "Mobiles"), TABLETS(1, "Tablets"), CAMERAS(2, "Cameras"), LAPTOPS(3, "Laptops"), TVS(4, "TVs"), PRINTERS(5, "Printers"), TRIMMERS(6, "Trimmers");

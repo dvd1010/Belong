@@ -11,7 +11,7 @@ import org.apache.http.params.BasicHttpParams;
 import org.apache.http.params.HttpParams;
 
 
-
+/*Class implements Get functionality from API, the jars are in lib folder of project*/
 public class HttpAgent {
     private static final String TAG = HttpAgent.class.getSimpleName();
 

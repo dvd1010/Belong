@@ -3,15 +3,12 @@ package com.belonginterview.fragment;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
-import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.animation.Animation;
-import android.view.animation.AnimationUtils;
 import android.widget.AdapterView;
 import android.widget.ImageView;
 import android.widget.ListView;
@@ -30,17 +27,16 @@ import com.belonginterview.model.Constants;
 import com.belonginterview.model.Facet;
 import com.belonginterview.model.Folder;
 import com.belonginterview.model.ItemList;
-import com.belonginterview.utils.ExpandCollapseAnimation;
+import com.belonginterview.utils.DropdownListAnimation;
 import com.belonginterview.utils.GetProductDetailsTask;
 import com.belonginterview.utils.SortUtils;
 
 import org.lucasr.twowayview.TwoWayView;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.Map;
 
-
+/*The fragment defines the listing of products, folders and facets.*/
 public class ProductListFragment extends Fragment {
 
     private ListView productListView;
@@ -92,19 +88,18 @@ public class ProductListFragment extends Fragment {
         return view;
     }
 
+    /*Function handles clicks for the horizontal folder list and generates facets accoordingly*/
     private void handleFolderListClick() {
         folderListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-                ExpandCollapseAnimation animation = null;
-                Animation slideDown = AnimationUtils.loadAnimation(getActivity(), R.anim.slide_down);
-                Animation slideUp = AnimationUtils.loadAnimation(getActivity(), R.anim.slide_up);
+                DropdownListAnimation animation = null;
                 TextView tv = (TextView) view.findViewById(R.id.folder_name);
                 if (containerLayout.getVisibility() == View.GONE ||
                         (markedTextView != null && !markedTextView.getText().equals(tv.getText()) && containerLayout.getVisibility() == View.VISIBLE)) {
 
                     if(containerLayout.getVisibility() == View.GONE) {
-                        animation = new ExpandCollapseAnimation(containerLayout, 500, AnimationEnum.EXPAND);
+                        animation = new DropdownListAnimation(containerLayout, 500, AnimationEnum.EXPAND);
                         containerLayout.startAnimation(animation);
                     }
 
@@ -115,7 +110,7 @@ public class ProductListFragment extends Fragment {
                     markedTextView = tv;
                     selectedFolder = "" + tv.getText();
                     ArrayList<Facet> nonEmptyFacets;
-                    for (Folder folder : folders) {
+                    for (Folder folder : folders) {   //removing facets with with count = 0
                         if (folder.getName().equalsIgnoreCase(selectedFolder)) {
                             nonEmptyFacets = new ArrayList<>();
                             for (Facet facet : folder.getFacets()) {
@@ -132,7 +127,7 @@ public class ProductListFragment extends Fragment {
                     }
 
                 } else if (markedTextView.getText().equals(tv.getText()) && containerLayout.getVisibility() == View.VISIBLE) {
-                    animation = new ExpandCollapseAnimation(containerLayout, 500, AnimationEnum.COLLAPSE);
+                    animation = new DropdownListAnimation(containerLayout, 500, AnimationEnum.COLLAPSE);
                     containerLayout.startAnimation(animation);
                     selectedFolder = "";
                     markedTextView.setTextColor(getResources().getColor(R.color.black));
@@ -142,6 +137,7 @@ public class ProductListFragment extends Fragment {
         });
     }
 
+    /*Handles the click on items of dropdown list visible by clicking on folder*/
     private void handleFacetListClick(final String selectedFolderName) {
         facetListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
@@ -177,6 +173,7 @@ public class ProductListFragment extends Fragment {
     }
 
 
+    /*function handles click on the sort icon along the bar of horizontal product list*/
     private void handleSortIconClick() {
         sortImageView.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -204,6 +201,7 @@ public class ProductListFragment extends Fragment {
         });
     }
 
+    /*function handles the filter application based on selected facets criteria.*/
     private void handleApplyFilterClick() {
         applyView.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -225,6 +223,7 @@ public class ProductListFragment extends Fragment {
         });
     }
 
+    /*clears all the filters which are already applied.*/
     private void handleClearFilterClick() {
         clearView.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -249,6 +248,7 @@ public class ProductListFragment extends Fragment {
         clearView = (TextView) view.findViewById(R.id.clear_filter);
     }
 
+    /*Displays data received from the APIs*/
     public void onTaskCompleted(ItemList itemList) {
         progressBar.setVisibility(View.GONE);
         nextUrl = itemList.getNext();
@@ -279,6 +279,7 @@ public class ProductListFragment extends Fragment {
         public void onClick(DialogInterface dialog, int which) {
             switch (which) {
                 case DialogInterface.BUTTON_POSITIVE:
+                    markedTextView.setTextColor(getResources().getColor(R.color.black));
                     new GetProductDetailsTask(ProductListFragment.this).
                             executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, apiTag, queryParamFirstPage);
 
