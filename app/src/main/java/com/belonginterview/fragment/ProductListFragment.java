@@ -25,6 +25,7 @@ import com.belonginterview.adapter.FacetListAdapter;
 import com.belonginterview.adapter.FolderListAdapter;
 import com.belonginterview.adapter.ProductListAdapter;
 import com.belonginterview.adapter.SortListAdapter;
+import com.belonginterview.enums.AnimationEnum;
 import com.belonginterview.model.Constants;
 import com.belonginterview.model.Facet;
 import com.belonginterview.model.Folder;
@@ -65,7 +66,7 @@ public class ProductListFragment extends Fragment {
     private boolean filterApplied;
 
     private static final String queryParamFirstPage = "page=1&{0}&facet=1";
-    ;
+    public static Map<String, ArrayList<Facet>> facetCheckMap;
     private ArrayList<String> tagList;
 
 
@@ -103,7 +104,7 @@ public class ProductListFragment extends Fragment {
                         (markedTextView != null && !markedTextView.getText().equals(tv.getText()) && containerLayout.getVisibility() == View.VISIBLE)) {
 
                     if(containerLayout.getVisibility() == View.GONE) {
-                        animation = new ExpandCollapseAnimation(containerLayout, 500, 0);
+                        animation = new ExpandCollapseAnimation(containerLayout, 500, AnimationEnum.EXPAND);
                         containerLayout.startAnimation(animation);
                     }
 
@@ -131,7 +132,7 @@ public class ProductListFragment extends Fragment {
                     }
 
                 } else if (markedTextView.getText().equals(tv.getText()) && containerLayout.getVisibility() == View.VISIBLE) {
-                    animation = new ExpandCollapseAnimation(containerLayout, 500, 1);
+                    animation = new ExpandCollapseAnimation(containerLayout, 500, AnimationEnum.COLLAPSE);
                     containerLayout.startAnimation(animation);
                     selectedFolder = "";
                     markedTextView.setTextColor(getResources().getColor(R.color.black));
@@ -149,10 +150,20 @@ public class ProductListFragment extends Fragment {
                 Facet facet = (Facet) adapterView.getAdapter().getItem(i);
                 if (checkedView.getVisibility() == View.GONE) {
                     checkedView.setVisibility(View.VISIBLE);
+                    ArrayList<Facet> checkedFacetList;
+                    if (facetCheckMap.containsKey(selectedFolderName)) {
+                        checkedFacetList = facetCheckMap.get(selectedFolderName);
+                        checkedFacetList.add(facet);
+                    } else {
+                        checkedFacetList = new ArrayList<>();
+                        checkedFacetList.add(facet);
+                    }
                     tagList.add(facet.getTag());
+                    facetCheckMap.put(selectedFolderName, checkedFacetList);
                     checkCount++;
                 } else {
                     checkedView.setVisibility(View.GONE);
+                    facetCheckMap.get(selectedFolderName).remove(facet);
                     tagList.remove(facet.getTag());
                     checkCount--;
                 }
