@@ -1,21 +1,18 @@
 package com.belonginterview.adapter;
 
 import android.content.Context;
+import android.support.v4.content.ContextCompat;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
-import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.belonginterview.R;
 import com.belonginterview.fragment.ProductListFragment;
 import com.belonginterview.model.Folder;
-import com.belonginterview.model.Product;
-import com.koushikdutta.urlimageviewhelper.UrlImageViewHelper;
 
 import java.util.ArrayList;
-import java.util.List;
 
 
 /*Horizontal list adapter of Folders like BRAND, PRICE RANGE, etc on top of product list*/
@@ -62,11 +59,18 @@ public class FolderListAdapter extends ArrayAdapter {
         Folder folder = folders.get(position);
         if(folder != null){
             vh.folderNameView.setText(folder.getName().toUpperCase());
-            if(!ProductListFragment.selectedFolder.isEmpty() && ProductListFragment.selectedFolder.equalsIgnoreCase(folder.getName())){
-                vh.folderNameView.setTextColor(getContext().getResources().getColor(R.color.orange_dark));
+            if(!ProductListFragment.openFolderName.isEmpty() &&
+                    ProductListFragment.openFolderName.equalsIgnoreCase(folder.getName())){
+                vh.folderNameView.setTextColor(ContextCompat.getColor(getContext(), R.color.orange_dark));
             }else{
-                vh.folderNameView.setTextColor(getContext().getResources().getColor(R.color.black));
+                vh.folderNameView.setTextColor(ContextCompat.getColor(getContext(), R.color.black));
             }
+            /*if(ProductListFragment.selectedFolders.size()>0
+                    && ProductListFragment.selectedFolders.contains(folder.getName().toUpperCase())){
+                vh.folderNameView.setTextColor(ContextCompat.getColor(getContext(), R.color.orange_dark));
+            }else{
+                vh.folderNameView.setTextColor(ContextCompat.getColor(getContext(), R.color.black));
+            }*/
 
         }
 

@@ -44,7 +44,6 @@ public class MainActivity extends AppCompatActivity implements NavigationDrawerC
     private FragmentManager fragmentManager = getSupportFragmentManager();
     private String mTitle;
     private Toolbar toolbar;
-    private ImageView searchImageView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -104,7 +103,6 @@ public class MainActivity extends AppCompatActivity implements NavigationDrawerC
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getSupportActionBar().setTitle(mTitle);
-        //setSearchIcon(getSupportActionBar());
         getMenuInflater().inflate(R.menu.menu_main, menu);
         return super.onCreateOptionsMenu(menu) | true;
     }
@@ -121,6 +119,10 @@ public class MainActivity extends AppCompatActivity implements NavigationDrawerC
 
     @Override
     public void onBackPressed() {
-        super.onBackPressed();
+        if(drawerLayout.isDrawerOpen(Gravity.LEFT)){
+            drawerLayout.closeDrawers();
+        }else {
+            super.onBackPressed();
+        }
     }
 }

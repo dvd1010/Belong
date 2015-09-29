@@ -6,6 +6,7 @@ import android.content.DialogInterface;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v4.content.ContextCompat;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -53,15 +54,18 @@ public class ProductListFragment extends Fragment {
     private AlertDialog.Builder alertDialog;
     private ArrayList<Folder> folders;
     private ListView facetListView;
-    private TextView markedTextView = null;
+    private ArrayList<TextView> selectedTextViews;
     public static String apiTag;
     public static String nextUrl;
-    public static String selectedFolder;
+    public static ArrayList<String> selectedFolders;
     private TextView applyView;
     private TextView clearView;
     private int checkCount;
     private boolean filterApplied;
+    private TextView openFolderView;
 
+    public static String openFolderName;
+    public static boolean isDropDownOpen = false;
     private static final String queryParamFirstPage = "page=1&{0}&facet=1";
     public static Map<String, ArrayList<Facet>> facetCheckMap;
     private ArrayList<String> tagList;
@@ -83,16 +87,19 @@ public class ProductListFragment extends Fragment {
 
         tagList = new ArrayList<>();
         facetCheckMap = new HashMap<>();
-        selectedFolder = "";
+        selectedFolders = new ArrayList<>();
         checkCount = 0;
+        openFolderName = "";
+        openFolderView = null;
         progressBar.setVisibility(View.VISIBLE);
         filterApplied = false;
+        selectedTextViews = new ArrayList<>();
         return view;
     }
 
     @Override
     public void onStop() {
-        if(getProductDetails != null){
+        if (getProductDetails != null) {
             getProductDetails.cancel(true);
         }
         super.onStop();
@@ -106,49 +113,64 @@ public class ProductListFragment extends Fragment {
                 DropdownListAnimation animation = null;
                 TextView tv = (TextView) view.findViewById(R.id.folder_name);
                 if (containerLayout.getVisibility() == View.GONE ||
-                        (markedTextView != null && !markedTextView.getText().equals(tv.getText()) && containerLayout.getVisibility() == View.VISIBLE)) {
+                        (openFolderView != null && !openFolderView.getText().equals(tv.getText()) && containerLayout.getVisibility() == View.VISIBLE)) {
 
-                    if(containerLayout.getVisibility() == View.GONE) {
+                    if (containerLayout.getVisibility() == View.GONE) {
                         animation = new DropdownListAnimation(containerLayout, 500, AnimationEnum.EXPAND);
                         containerLayout.startAnimation(animation);
+                        isDropDownOpen = true;
                     }
 
-                    tv.setTextColor(getResources().getColor(R.color.orange_dark));
-                    if (markedTextView != null) {
-                        markedTextView.setTextColor(getResources().getColor(R.color.black));
+                    if(openFolderView != null){
+                        openFolderView.setTextColor(ContextCompat.getColor(getActivity().getBaseContext(), R.color.black));
                     }
-                    markedTextView = tv;
-                    selectedFolder = "" + tv.getText();
-                    ArrayList<Facet> nonEmptyFacets;
-                    for (Folder folder : folders) {   //removing facets with with count = 0
-                        if (folder.getName().equalsIgnoreCase(selectedFolder)) {
-                            nonEmptyFacets = new ArrayList<>();
-                            for (Facet facet : folder.getFacets()) {
-                                if (facet.getCount() > 0) {
-                                    nonEmptyFacets.add(facet);
-                                }
-                            }
-                            facetListAdapter = new FacetListAdapter(getActivity(), R.layout.list_facet_item, nonEmptyFacets);
-                            facetListView.setAdapter(facetListAdapter);
-                            facetListAdapter.notifyDataSetChanged();
-                            handleFacetListClick(selectedFolder);
-                            break;
-                        }
-                    }
+                    tv.setTextColor(ContextCompat.getColor(getActivity().getBaseContext(), R.color.orange_dark));
+                    openFolderView = tv;
+                    //selectedTextViews.add(tv);
+                    //selectedFolders.add("" + tv.getText());
+                    openFolderName = ""+tv.getText();
+                    fillFacetListView(openFolderName);
 
-                } else if (markedTextView.getText().equals(tv.getText()) && containerLayout.getVisibility() == View.VISIBLE) {
+                } else if (openFolderView.equals(tv) && containerLayout.getVisibility() == View.VISIBLE) {
                     animation = new DropdownListAnimation(containerLayout, 500, AnimationEnum.COLLAPSE);
                     containerLayout.startAnimation(animation);
-                    selectedFolder = "";
-                    markedTextView.setTextColor(getResources().getColor(R.color.black));
+                    isDropDownOpen = false;
+                    openFolderView.setTextColor(ContextCompat.getColor(getActivity().getBaseContext(), R.color.black));
+                    openFolderView = null;
+                    openFolderName = "";
+                    /*for(TextView textView : selectedTextViews) {
+                        textView.setTextColor(ContextCompat.getColor(getActivity().getBaseContext(), R.color.black));
+                    }
+                    selectedFolders = new ArrayList<>();
+                    selectedTextViews = new ArrayList<>();*/
                 }
 
             }
         });
     }
 
+    private void fillFacetListView(String folderName) {
+        ArrayList<Facet> nonEmptyFacets;
+        for (Folder folder : folders) {   //removing facets with with count = 0
+            if (folderName.equalsIgnoreCase(folder.getName())) {
+                nonEmptyFacets = new ArrayList<>();
+                for (Facet facet : folder.getFacets()) {
+                    if (facet.getCount() > 0) {
+                        nonEmptyFacets.add(facet);
+                    }
+                }
+                facetListAdapter = new FacetListAdapter(getActivity(), R.layout.list_facet_item, nonEmptyFacets);
+                facetListView.setAdapter(facetListAdapter);
+                facetListAdapter.notifyDataSetChanged();
+                handleFacetListClick(folderName);
+                break;
+            }
+        }
+    }
+
+
     /*Handles the click on items of dropdown list visible by clicking on folder*/
-    private void handleFacetListClick(final String selectedFolderName) {
+    private void handleFacetListClick(final String folderName) {
         facetListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
@@ -157,19 +179,19 @@ public class ProductListFragment extends Fragment {
                 if (checkedView.getVisibility() == View.GONE) {
                     checkedView.setVisibility(View.VISIBLE);
                     ArrayList<Facet> checkedFacetList;
-                    if (facetCheckMap.containsKey(selectedFolderName)) {
-                        checkedFacetList = facetCheckMap.get(selectedFolderName);
+                    if (facetCheckMap.containsKey(folderName)) {
+                        checkedFacetList = facetCheckMap.get(folderName);
                         checkedFacetList.add(facet);
                     } else {
                         checkedFacetList = new ArrayList<>();
                         checkedFacetList.add(facet);
                     }
                     tagList.add(facet.getTag());
-                    facetCheckMap.put(selectedFolderName, checkedFacetList);
+                    facetCheckMap.put(folderName, checkedFacetList);
                     checkCount++;
                 } else {
                     checkedView.setVisibility(View.GONE);
-                    facetCheckMap.get(selectedFolderName).remove(facet);
+                    facetCheckMap.get(folderName).remove(facet);
                     tagList.remove(facet.getTag());
                     checkCount--;
                 }
@@ -217,7 +239,9 @@ public class ProductListFragment extends Fragment {
             @Override
             public void onClick(View view) {
                 progressBar.setVisibility(View.VISIBLE);
-                markedTextView.setTextColor(getResources().getColor(R.color.black));
+                for(TextView textView : selectedTextViews) {
+                    textView.setTextColor(ContextCompat.getColor(getActivity().getBaseContext(), R.color.orange_dark));
+                }
                 StringBuilder stringBuilder = new StringBuilder();
                 stringBuilder.append("page=1&");
                 stringBuilder.append("tags=" + apiTag + "&");
@@ -227,8 +251,8 @@ public class ProductListFragment extends Fragment {
                 String queryParams = stringBuilder.toString() + "facet=1";
                 new GetProductDetailsTask(ProductListFragment.this).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, apiTag, queryParams);
                 filterApplied = true;
-                markedTextView.setTextColor(getResources().getColor(R.color.black));
                 containerLayout.setVisibility(View.GONE);
+                isDropDownOpen = false;
             }
         });
     }
@@ -239,6 +263,7 @@ public class ProductListFragment extends Fragment {
             @Override
             public void onClick(View view) {
                 containerLayout.setVisibility(View.GONE);
+                isDropDownOpen = false;
                 AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
                 builder.setMessage("Do you want to clear all the filters?").setPositiveButton("Yes", dialogClickListener)
                         .setNegativeButton("No", dialogClickListener).show();
@@ -288,7 +313,15 @@ public class ProductListFragment extends Fragment {
         public void onClick(DialogInterface dialog, int which) {
             switch (which) {
                 case DialogInterface.BUTTON_POSITIVE:
-                    markedTextView.setTextColor(getResources().getColor(R.color.black));
+                  /*  for (int i = 0; i < folderListView.getAdapter().getCount(); i++) {
+                        TextView tv = (TextView) folderListView.getAdapter().getView(i, null, folderListView);
+                        tv.setTextColor(ContextCompat.getColor(getActivity().getBaseContext(), R.color.black));
+                    }*/
+                    for(TextView textView : selectedTextViews) {
+                        textView.setTextColor(ContextCompat.getColor(getActivity().getBaseContext(), R.color.black));
+                    }
+                    selectedTextViews = new ArrayList<>();
+                    selectedFolders = new ArrayList<>();
                     clearView.setText("CLEAR ALL");
                     checkCount = 0;
                     new GetProductDetailsTask(ProductListFragment.this).

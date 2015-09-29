@@ -84,8 +84,10 @@ public class ProductListAdapter extends ArrayAdapter {
         }
         Product product = products.get(position);
         if(product != null){
-            if(product.getImagesO() != null) {
+            if(!product.getImagesO().getL().isEmpty()) {
                 UrlImageViewHelper.setUrlDrawable(vh.productImageView, product.getImagesO().getL());
+            }else{
+                vh.productImageView.setImageDrawable(getContext().getResources().getDrawable(R.drawable.placeholder2));
             }
             vh.productNameView.setText(product.getName());
             vh.productPriceView.setText(product.getMinPriceStr());
