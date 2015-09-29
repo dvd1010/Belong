@@ -267,7 +267,6 @@ public class ProductListFragment extends Fragment {
             productListView.setAdapter(productListAdapter);
         } else {
             productListAdapter.addAll(itemList.getProducts());
-            productListAdapter.notifyDataSetChanged();
         }
         productListAdapter.notifyDataSetChanged();
 
