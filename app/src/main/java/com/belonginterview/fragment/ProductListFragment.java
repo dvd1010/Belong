@@ -34,6 +34,7 @@ import com.belonginterview.utils.SortUtils;
 import org.lucasr.twowayview.TwoWayView;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Map;
 
 /*The fragment defines the listing of products, folders and facets.*/
@@ -81,11 +82,20 @@ public class ProductListFragment extends Fragment {
         handleClearFilterClick();
 
         tagList = new ArrayList<>();
+        facetCheckMap = new HashMap<>();
         selectedFolder = "";
         checkCount = 0;
         progressBar.setVisibility(View.VISIBLE);
         filterApplied = false;
         return view;
+    }
+
+    @Override
+    public void onStop() {
+        if(getProductDetails != null){
+            getProductDetails.cancel(true);
+        }
+        super.onStop();
     }
 
     /*Function handles clicks for the horizontal folder list and generates facets accoordingly*/
@@ -280,6 +290,8 @@ public class ProductListFragment extends Fragment {
             switch (which) {
                 case DialogInterface.BUTTON_POSITIVE:
                     markedTextView.setTextColor(getResources().getColor(R.color.black));
+                    clearView.setText("CLEAR ALL");
+                    checkCount = 0;
                     new GetProductDetailsTask(ProductListFragment.this).
                             executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, apiTag, queryParamFirstPage);
 

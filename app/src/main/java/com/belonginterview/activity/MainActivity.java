@@ -9,6 +9,7 @@ import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.widget.DrawerLayout;
+import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.SearchView;
@@ -18,6 +19,7 @@ import android.view.Gravity;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.ImageView;
 import android.widget.RelativeLayout;
 
 import com.belonginterview.R;
@@ -42,7 +44,7 @@ public class MainActivity extends AppCompatActivity implements NavigationDrawerC
     private FragmentManager fragmentManager = getSupportFragmentManager();
     private String mTitle;
     private Toolbar toolbar;
-
+    private ImageView searchImageView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -60,22 +62,8 @@ public class MainActivity extends AppCompatActivity implements NavigationDrawerC
                 getSupportFragmentManager().findFragmentById(R.id.navigation_drawer);
         mNavigationDrawerFragment.setUp(R.id.left_drawer, drawerLayout, toolbar);
 
-        handleIntent(getIntent());
     }
 
-    @Override
-    protected void onNewIntent(Intent intent) {
-        handleIntent(intent);
-        super.onNewIntent(intent);
-    }
-
-    private void handleIntent(Intent intent) {
-
-        if (Intent.ACTION_SEARCH.equals(intent.getAction())) {
-            String query = intent.getStringExtra(SearchManager.QUERY);
-            //use the query to search your data somehow
-        }
-    }
 
     /*Opens Fragment corresponding to user selection on Navigation Drawer*/
     @Override
@@ -112,30 +100,23 @@ public class MainActivity extends AppCompatActivity implements NavigationDrawerC
         }
     }
 
+
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.menu_search, menu);
-        SearchManager searchManager =
-                (SearchManager) getSystemService(Context.SEARCH_SERVICE);
-        SearchView searchView =
-                (SearchView) menu.findItem(R.id.search).getActionView();
-        searchView.setSearchableInfo(
-                searchManager.getSearchableInfo(getComponentName()));
-
-        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
-            @Override
-            public boolean onQueryTextSubmit(String query) {
-                return false;
-            }
-
-            @Override
-            public boolean onQueryTextChange(String newText) {
-                String text = newText;
-                return false;
-            }
-        });
         getSupportActionBar().setTitle(mTitle);
-        return super.onCreateOptionsMenu(menu);
+        //setSearchIcon(getSupportActionBar());
+        getMenuInflater().inflate(R.menu.menu_main, menu);
+        return super.onCreateOptionsMenu(menu) | true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()){
+            case R.id.search:
+                startActivity(new Intent(MainActivity.this, SearchActivity.class));
+                break;
+        }
+        return super.onOptionsItemSelected(item);
     }
 
     @Override

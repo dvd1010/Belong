@@ -19,30 +19,29 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
 
-            <intent-filter>
-                <action android:name="android.intent.action.SEARCH" />
 
-                <category android:name="android.intent.category.DEFAULT" />
-            </intent-filter>
-
-            <meta-data android:name="android.support.v7.widget.SearchView"
-                android:resource="@xml/searchable"/>
+            <!--<meta-data
+                android:name="android.app.default_searchable"
+                android:value=".SearchResultsActivity" />-->
         </activity>
 
 
-        <!--<activity
+        <activity
             android:name=".activity.SearchActivity"
             android:label="Search"
-            android:screenOrientation="portrait">
+            android:screenOrientation="portrait"
+            android:parentActivityName=".activity.MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.SEARCH" />
-
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
 
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value=".activity.MainActivity" />
             <meta-data android:name="android.support.v7.widget.SearchView"
                 android:resource="@xml/searchable"/>
-        </activity>-->
+        </activity>
     </application>
 
 </manifest>

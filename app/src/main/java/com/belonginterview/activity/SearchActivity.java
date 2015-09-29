@@ -1,48 +1,75 @@
 package com.belonginterview.activity;
 
-import android.app.Activity;
-import android.app.SearchManager;
-import android.content.Context;
-import android.content.Intent;
+
 import android.os.Bundle;
+import android.support.v7.app.ActionBar;
+import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.SearchView;
+import android.support.v7.widget.Toolbar;
 import android.view.Menu;
+import android.view.View;
+import android.widget.FrameLayout;
+import android.widget.ListView;
+import android.widget.TextView;
+import android.widget.Toast;
 
 import com.belonginterview.R;
+import com.belonginterview.model.ItemList;
+import com.belonginterview.utils.GetProductDetailsTask;
 
-public class SearchActivity extends Activity {
+import org.apache.http.client.fluent.Async;
 
+public class SearchActivity extends AppCompatActivity {
 
+    private FrameLayout containerLayout;
+    private ListView searchResultListView;
+    private TextView staticTextView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        handleIntent(getIntent());
         super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_result);
+        loadViews();
+        Toolbar toolbar = (Toolbar)findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
+        setSearchView();
     }
 
-    @Override
-    protected void onNewIntent(Intent intent) {
-        handleIntent(intent);
-        super.onNewIntent(intent);
+    private void setSearchView() {
+        ActionBar actionBar = getSupportActionBar();
+        actionBar.setHomeButtonEnabled(true);
+        SearchView searchView = new SearchView(this);
+        actionBar.setCustomView(searchView);
+        actionBar.setDisplayOptions(ActionBar.DISPLAY_HOME_AS_UP | ActionBar.DISPLAY_SHOW_CUSTOM);
+        searchView.setQueryHint("Search...");
+        searchView.setFocusable(true);
+        searchView.setIconified(false);
+        searchView.requestFocusFromTouch();
+        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+            @Override
+            public boolean onQueryTextSubmit(String query) {
+                return false;
+            }
+
+            @Override
+            public boolean onQueryTextChange(String newText) {
+                Toast.makeText(SearchActivity.this, newText, Toast.LENGTH_SHORT).show();
+                containerLayout.setVisibility(View.GONE);
+                staticTextView.setVisibility(View.VISIBLE);
+                searchResultListView.setVisibility(View.VISIBLE);
+                return false;
+            }
+        });
     }
 
-    private void handleIntent(Intent intent) {
-
-        if (Intent.ACTION_SEARCH.equals(intent.getAction())) {
-            String query = intent.getStringExtra(SearchManager.QUERY);
-            //use the query to search your data somehow
-        }
+    private void loadViews(){
+        containerLayout = (FrameLayout)findViewById(R.id.empty_container);
+        searchResultListView = (ListView)findViewById(R.id.search_product_list);
+        staticTextView = (TextView)findViewById(R.id.show_result_text);
     }
 
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.menu_search, menu);
-        SearchManager searchManager =
-                (SearchManager) getSystemService(Context.SEARCH_SERVICE);
-        SearchView searchView =
-                (SearchView) menu.findItem(R.id.search).getActionView();
-        searchView.setSearchableInfo(
-                searchManager.getSearchableInfo(getComponentName()));
-        return super.onCreateOptionsMenu(menu);
+    public void onTaskCompleted(ItemList itemList){
+
     }
+
 }

@@ -1,5 +1,6 @@
 package com.belonginterview.utils;
 
+import android.app.Activity;
 import android.os.AsyncTask;
 
 import com.belonginterview.fragment.ProductListFragment;
@@ -11,14 +12,17 @@ import java.text.MessageFormat;
 public class GetProductDetailsTask extends AsyncTask<String, Void, ItemList> {
 
     private ProductListFragment fragment;
+    private Activity activity;
 
     private static final String GET_PRODUCTS_URL = "http://api.buyingiq.com/v1/search/?";
 
-    public GetProductDetailsTask(){
-
+    public GetProductDetailsTask(Activity activity){
+        this.activity = activity;
+        this.fragment = null;
     }
     public GetProductDetailsTask(ProductListFragment fragment){
         this.fragment = fragment;
+        this.activity = null;
     }
 
 
@@ -40,7 +44,12 @@ public class GetProductDetailsTask extends AsyncTask<String, Void, ItemList> {
     protected void onPostExecute(ItemList itemList) {
         super.onPostExecute(itemList);
         if (itemList != null) {
-            fragment.onTaskCompleted(itemList);
+            if(fragment!= null) {
+                fragment.onTaskCompleted(itemList);
+            }
+            if(activity != null){
+                activity.onTaskCompleted(itemList);
+            }
         }
     }
 }
