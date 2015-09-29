@@ -67,7 +67,7 @@ public class ProductListFragment extends Fragment {
     public static boolean isDropDownOpen;
     private static final String queryParamFirstPage = "page=1&{0}&facet=1";
     public static Map<String, ArrayList<Facet>> facetCheckMap;
-    private ArrayList<String> tagList;
+    public static ArrayList<String> tagList;
     private DropdownListAnimation animation;
 
 

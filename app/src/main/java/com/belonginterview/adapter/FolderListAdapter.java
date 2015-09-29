@@ -69,13 +69,6 @@ public class FolderListAdapter extends ArrayAdapter {
             else{
                 vh.folderNameView.setTextColor(ContextCompat.getColor(getContext(), R.color.black));
             }
-            /*if(ProductListFragment.selectedFolders.size()>0
-                    && ProductListFragment.selectedFolders.contains(folder.getName().toUpperCase())){
-                vh.folderNameView.setTextColor(ContextCompat.getColor(getContext(), R.color.orange_dark));
-            }else{
-                vh.folderNameView.setTextColor(ContextCompat.getColor(getContext(), R.color.black));
-            }*/
-
         }
 
         return view;

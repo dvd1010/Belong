@@ -64,7 +64,7 @@ public class FacetListAdapter extends ArrayAdapter {
         if(facet != null && facet.getCount()>0){
             vh.facetNameView.setText(facet.getLabel());
             vh.facetCountView.setText("("+facet.getCount()+")");
-            if(facet.isSelected()){
+            if(facet.isSelected() || ProductListFragment.tagList.contains(facet.getTag())){
                 vh.selectedCheckView.setVisibility(View.VISIBLE);
             }else{
                 vh.selectedCheckView.setVisibility(View.GONE);
