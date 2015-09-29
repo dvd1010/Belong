@@ -110,6 +110,19 @@
         android:background="@color/white"
         />
 
+    <TextView
+        android:id="@+id/no_products"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:paddingLeft="15dp"
+        android:paddingRight="15dp"
+        android:layout_centerInParent="true"
+        android:gravity="center"
+        android:text="No Products found matching given criteria"
+        android:textColor="@color/black"
+        android:visibility="gone"
+        android:textSize="20sp"/>
+
     <ProgressBar
         android:id="@+id/progress_bar"
         android:layout_width="wrap_content"

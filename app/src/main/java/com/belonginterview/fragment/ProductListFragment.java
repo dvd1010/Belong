@@ -54,10 +54,9 @@ public class ProductListFragment extends Fragment {
     private AlertDialog.Builder alertDialog;
     private ArrayList<Folder> folders;
     private ListView facetListView;
-    private ArrayList<TextView> selectedTextViews;
+    private TextView noProductsView;
     public static String apiTag;
     public static String nextUrl;
-    public static ArrayList<String> selectedFolders;
     private TextView applyView;
     private TextView clearView;
     private int checkCount;
@@ -65,10 +64,11 @@ public class ProductListFragment extends Fragment {
     private TextView openFolderView;
 
     public static String openFolderName;
-    public static boolean isDropDownOpen = false;
+    public static boolean isDropDownOpen;
     private static final String queryParamFirstPage = "page=1&{0}&facet=1";
     public static Map<String, ArrayList<Facet>> facetCheckMap;
     private ArrayList<String> tagList;
+    private DropdownListAnimation animation;
 
 
     @Override
@@ -84,16 +84,14 @@ public class ProductListFragment extends Fragment {
         handleFolderListClick();
         handleApplyFilterClick();
         handleClearFilterClick();
-
+        isDropDownOpen = false;
         tagList = new ArrayList<>();
         facetCheckMap = new HashMap<>();
-        selectedFolders = new ArrayList<>();
         checkCount = 0;
         openFolderName = "";
         openFolderView = null;
         progressBar.setVisibility(View.VISIBLE);
         filterApplied = false;
-        selectedTextViews = new ArrayList<>();
         return view;
     }
 
@@ -110,43 +108,31 @@ public class ProductListFragment extends Fragment {
         folderListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-                DropdownListAnimation animation = null;
                 TextView tv = (TextView) view.findViewById(R.id.folder_name);
                 if (containerLayout.getVisibility() == View.GONE ||
                         (openFolderView != null && !openFolderView.getText().equals(tv.getText()) && containerLayout.getVisibility() == View.VISIBLE)) {
-
-                    if (containerLayout.getVisibility() == View.GONE) {
-                        animation = new DropdownListAnimation(containerLayout, 500, AnimationEnum.EXPAND);
-                        containerLayout.startAnimation(animation);
-                        isDropDownOpen = true;
-                    }
-
-                    if(openFolderView != null){
-                        openFolderView.setTextColor(ContextCompat.getColor(getActivity().getBaseContext(), R.color.black));
-                    }
-                    tv.setTextColor(ContextCompat.getColor(getActivity().getBaseContext(), R.color.orange_dark));
-                    openFolderView = tv;
-                    //selectedTextViews.add(tv);
-                    //selectedFolders.add("" + tv.getText());
-                    openFolderName = ""+tv.getText();
-                    fillFacetListView(openFolderName);
-
+                    openDropDownView(tv);
                 } else if (openFolderView.equals(tv) && containerLayout.getVisibility() == View.VISIBLE) {
-                    animation = new DropdownListAnimation(containerLayout, 500, AnimationEnum.COLLAPSE);
-                    containerLayout.startAnimation(animation);
-                    isDropDownOpen = false;
-                    openFolderView.setTextColor(ContextCompat.getColor(getActivity().getBaseContext(), R.color.black));
-                    openFolderView = null;
-                    openFolderName = "";
-                    /*for(TextView textView : selectedTextViews) {
-                        textView.setTextColor(ContextCompat.getColor(getActivity().getBaseContext(), R.color.black));
-                    }
-                    selectedFolders = new ArrayList<>();
-                    selectedTextViews = new ArrayList<>();*/
+                    closeDropDownView();
                 }
 
             }
         });
+    }
+
+    private void openDropDownView(TextView tv) {
+        if (containerLayout.getVisibility() == View.GONE) {
+            animation = new DropdownListAnimation(containerLayout, 500, AnimationEnum.EXPAND);
+            containerLayout.startAnimation(animation);
+            isDropDownOpen = true;
+        }
+        openFolderName = "" + tv.getText();
+        if (openFolderView != null && !facetCheckMap.keySet().contains(openFolderView.getText())) {
+            openFolderView.setTextColor(ContextCompat.getColor(getActivity().getBaseContext(), R.color.black));
+        }
+        tv.setTextColor(ContextCompat.getColor(getActivity().getBaseContext(), R.color.orange_dark));
+        openFolderView = tv;
+        fillFacetListView(openFolderName);
     }
 
     private void fillFacetListView(String folderName) {
@@ -239,9 +225,16 @@ public class ProductListFragment extends Fragment {
             @Override
             public void onClick(View view) {
                 progressBar.setVisibility(View.VISIBLE);
-                for(TextView textView : selectedTextViews) {
-                    textView.setTextColor(ContextCompat.getColor(getActivity().getBaseContext(), R.color.orange_dark));
+                noProductsView.setVisibility(View.GONE);
+                for (int i = 0; i < folderListView.getAdapter().getCount(); i++) {
+                    TextView folderView = (TextView) folderListView.getAdapter().getView(i, null, folderListView);
+                    String folderName = "" + folderView.getText();
+                    if (facetCheckMap.keySet().contains(folderName.toUpperCase())) {
+                        folderView.setTextColor(ContextCompat.getColor(getActivity().getBaseContext(), R.color.orange_dark));
+                    }
                 }
+                openFolderView = null;
+                openFolderName = "";
                 StringBuilder stringBuilder = new StringBuilder();
                 stringBuilder.append("page=1&");
                 stringBuilder.append("tags=" + apiTag + "&");
@@ -249,7 +242,8 @@ public class ProductListFragment extends Fragment {
                     stringBuilder.append("tags=" + tag + "&");
                 }
                 String queryParams = stringBuilder.toString() + "facet=1";
-                new GetProductDetailsTask(ProductListFragment.this).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, apiTag, queryParams);
+                new GetProductDetailsTask(ProductListFragment.this).
+                        executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, apiTag, queryParams);
                 filterApplied = true;
                 containerLayout.setVisibility(View.GONE);
                 isDropDownOpen = false;
@@ -281,31 +275,39 @@ public class ProductListFragment extends Fragment {
         facetListView = (ListView) view.findViewById(R.id.facet_list);
         applyView = (TextView) view.findViewById(R.id.apply_filter);
         clearView = (TextView) view.findViewById(R.id.clear_filter);
+        noProductsView = (TextView) view.findViewById(R.id.no_products);
     }
 
     /*Displays data received from the APIs*/
     public void onTaskCompleted(ItemList itemList) {
         progressBar.setVisibility(View.GONE);
-        nextUrl = itemList.getNext();
-        if (productListAdapter == null || filterApplied) {
-            productListAdapter = new ProductListAdapter(getActivity(), R.layout.list_item_product, itemList.getProducts(), ProductListFragment.this);
-            productListView.setAdapter(productListAdapter);
-        } else {
-            productListAdapter.addAll(itemList.getProducts());
-        }
-        productListAdapter.notifyDataSetChanged();
+        if (itemList.getProducts().size() > 0) {
+            noProductsView.setVisibility(View.GONE);
+            productListView.setVisibility(View.VISIBLE);
+            nextUrl = itemList.getNext();
+            if (productListAdapter == null || filterApplied) {
+                productListAdapter = new ProductListAdapter(getActivity(), R.layout.list_item_product, itemList.getProducts(), ProductListFragment.this);
+                productListView.setAdapter(productListAdapter);
+            } else {
+                productListAdapter.addAll(itemList.getProducts());
+            }
+            productListAdapter.notifyDataSetChanged();
 
         /*First Folder by default is Categories, as per mockup it is not being shown*/
-        ArrayList<Folder> listWithoutCategoryField = new ArrayList<>();
-        for (Folder folder : itemList.getFolders()) {
-            if (!folder.getName().equals("Categories")) {
-                listWithoutCategoryField.add(folder);
+            ArrayList<Folder> listWithoutCategoryField = new ArrayList<>();
+            for (Folder folder : itemList.getFolders()) {
+                if (!folder.getName().equals("Categories")) {
+                    listWithoutCategoryField.add(folder);
+                }
             }
+            folders = listWithoutCategoryField;
+            folderListAdapter = new FolderListAdapter(getActivity(), R.layout.list_item_folder, listWithoutCategoryField);
+            folderListView.setAdapter(folderListAdapter);
+            folderListAdapter.notifyDataSetChanged();
+        } else {
+            noProductsView.setVisibility(View.VISIBLE);
+            productListView.setVisibility(View.GONE);
         }
-        folders = listWithoutCategoryField;
-        folderListAdapter = new FolderListAdapter(getActivity(), R.layout.list_item_folder, listWithoutCategoryField);
-        folderListView.setAdapter(folderListAdapter);
-        folderListAdapter.notifyDataSetChanged();
     }
 
     DialogInterface.OnClickListener dialogClickListener = new DialogInterface.OnClickListener() {
@@ -313,17 +315,19 @@ public class ProductListFragment extends Fragment {
         public void onClick(DialogInterface dialog, int which) {
             switch (which) {
                 case DialogInterface.BUTTON_POSITIVE:
-                  /*  for (int i = 0; i < folderListView.getAdapter().getCount(); i++) {
-                        TextView tv = (TextView) folderListView.getAdapter().getView(i, null, folderListView);
-                        tv.setTextColor(ContextCompat.getColor(getActivity().getBaseContext(), R.color.black));
-                    }*/
-                    for(TextView textView : selectedTextViews) {
-                        textView.setTextColor(ContextCompat.getColor(getActivity().getBaseContext(), R.color.black));
+                    noProductsView.setVisibility(View.GONE);
+                    for (int i = 0; i < folderListView.getAdapter().getCount(); i++) {
+                        TextView folderView = (TextView) folderListView.getAdapter().getView(i, null, folderListView);
+                        String folderName = "" + folderView.getText();
+                        if (facetCheckMap.keySet().contains(folderName.toUpperCase())) {
+                            folderView.setTextColor(ContextCompat.getColor(getActivity().getBaseContext(), R.color.black));
+                        }
                     }
-                    selectedTextViews = new ArrayList<>();
-                    selectedFolders = new ArrayList<>();
                     clearView.setText("CLEAR ALL");
                     checkCount = 0;
+                    facetCheckMap = new HashMap<>();
+                    openFolderView = null;
+                    openFolderName = "";
                     new GetProductDetailsTask(ProductListFragment.this).
                             executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, apiTag, queryParamFirstPage);
 
@@ -332,6 +336,15 @@ public class ProductListFragment extends Fragment {
             }
         }
     };
+
+    public void closeDropDownView(){
+        animation = new DropdownListAnimation(containerLayout, 500, AnimationEnum.COLLAPSE);
+        containerLayout.startAnimation(animation);
+        isDropDownOpen = false;
+        openFolderView.setTextColor(ContextCompat.getColor(getActivity().getBaseContext(), R.color.black));
+        openFolderView = null;
+        openFolderName = "";
+    }
 
 
 }

@@ -44,6 +44,7 @@ public class MainActivity extends AppCompatActivity implements NavigationDrawerC
     private FragmentManager fragmentManager = getSupportFragmentManager();
     private String mTitle;
     private Toolbar toolbar;
+    private ProductListFragment currentFragment;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -72,7 +73,7 @@ public class MainActivity extends AppCompatActivity implements NavigationDrawerC
             @Override
             public void run() {
                 android.os.Process.setThreadPriority(android.os.Process.THREAD_PRIORITY_BACKGROUND);
-                Fragment currentFragment = getCurrentFragment(position);
+                currentFragment = getCurrentFragment(position);
                 mTitle = MenuOptionsEnum.getMenuOption(position).getName();
                 fragmentManager.beginTransaction()
                         .replace(R.id.content_frame, currentFragment)
@@ -83,7 +84,7 @@ public class MainActivity extends AppCompatActivity implements NavigationDrawerC
         executorService.shutdown();
     }
 
-    private Fragment getCurrentFragment(int position){
+    private ProductListFragment getCurrentFragment(int position){
         ProductListFragment fragment = new ProductListFragment();
         Bundle bundle = new Bundle();
         String apiTag = MenuEnumTagMap.getTagString(MenuOptionsEnum.getMenuOption(position));
@@ -121,7 +122,11 @@ public class MainActivity extends AppCompatActivity implements NavigationDrawerC
     public void onBackPressed() {
         if(drawerLayout.isDrawerOpen(Gravity.LEFT)){
             drawerLayout.closeDrawers();
-        }else {
+        }
+        else if(ProductListFragment.isDropDownOpen){
+            currentFragment.closeDropDownView();
+        }
+        else {
             super.onBackPressed();
         }
     }

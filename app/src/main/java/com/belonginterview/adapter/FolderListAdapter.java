@@ -62,7 +62,11 @@ public class FolderListAdapter extends ArrayAdapter {
             if(!ProductListFragment.openFolderName.isEmpty() &&
                     ProductListFragment.openFolderName.equalsIgnoreCase(folder.getName())){
                 vh.folderNameView.setTextColor(ContextCompat.getColor(getContext(), R.color.orange_dark));
-            }else{
+            }
+            else if(ProductListFragment.facetCheckMap.keySet().contains(folder.getName().toUpperCase())){
+                vh.folderNameView.setTextColor(ContextCompat.getColor(getContext(), R.color.orange_dark));
+            }
+            else{
                 vh.folderNameView.setTextColor(ContextCompat.getColor(getContext(), R.color.black));
             }
             /*if(ProductListFragment.selectedFolders.size()>0
